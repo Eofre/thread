@@ -17,22 +17,24 @@ public class RandomNumberSequenceGeneratorThread implements Runnable {
         String message = "";
         buffer.setGenerationFinished(false);
         for (int i = 0; i < numberIterations; i++) {
-            List<Integer> numbers = new ArrayList<>();
-            for (int j = 0; j < buffer.getSize(); j++) {
-                int number = (int) Math.round(Math.random());
-                numbers.add(number);
-            }
-            synchronized (buffer) {
-                buffer.put(numbers);
+//            List<Integer> numbers = new ArrayList<>();
+            int number = (int) Math.round(Math.random());
+            buffer.put(number);
+//            for (int j = 0; j < buffer.getSize(); j++) {
+//                int number = (int) Math.round(Math.random());
+//                numbers.add(number);
+//            }
+//            synchronized (buffer) {
+//                buffer.addValues(numbers);
                 int iteration = i + 1;
-                message = "Итерация " + iteration + ". Первый поток отработал! В буфер добавлена последовательность: " + numbers.toString();
+                message = "Итерация " + iteration + ". Первый поток отработал! В буфер добавлено число: " + number;
                 consoleMessage(message);
                 buffer.showBufferConsole();
-            }
+//            }
         }
-        synchronized (buffer) {
+//        synchronized (buffer) {
             buffer.setGenerationFinished(true);
-        }
+//        }
     }
 
     private void consoleMessage(String message) {

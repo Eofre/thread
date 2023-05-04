@@ -16,10 +16,10 @@ public class CleanerThread implements Runnable {
     }
 
     private boolean isBufferNotEmptyOrGenerationNotFinished() {
-        return !buffer.getIsGenerationFinished() || !buffer.isEmpty();
+        return !buffer.isGenerationFinished() || !buffer.isEmpty();
     }
     private boolean isBufferEmptyOrGenerationNotFinished() {
-        return buffer.isEmpty() && !buffer.getIsGenerationFinished();
+        return buffer.isEmpty() && !buffer.isGenerationFinished();
     }
 
 
@@ -27,7 +27,7 @@ public class CleanerThread implements Runnable {
     public void run() {
         while (isBufferNotEmptyOrGenerationNotFinished()) {
             List<Integer> numbersOne;
-            synchronized (buffer) {
+//            synchronized (buffer) {
                 numbersOne = buffer.getAllNumbersOne();
                 if (numbersOne.isEmpty() && !buffer.isEmpty()) {
                     consoleMessage("Второй поток отработал. Буфер очищен");
@@ -37,14 +37,14 @@ public class CleanerThread implements Runnable {
                     consoleMessage("Второй поток отработал. Единицы извлечены. Кол-во единиц: " + numbersOne.size());
                     buffer.showBufferConsole();
                 }
-                if (isBufferEmptyOrGenerationNotFinished()) {
-                    try {
-                        buffer.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//                if (isBufferEmptyOrGenerationNotFinished()) {
+//                    try {
+//                        buffer.wait();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
         }
     }
 }

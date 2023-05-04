@@ -2,7 +2,7 @@ package student;
 
 import java.util.*;
 
-public class MyBuffer {
+public class MyBuffer implements Buffer {
     private final List<Integer> data;
     private final int size;
     private boolean isGenerationFinished;
@@ -12,36 +12,48 @@ public class MyBuffer {
         this.size = size;
     }
 
-    public synchronized boolean getIsGenerationFinished() {
-        return isGenerationFinished;
-    }
-
-    public synchronized void setGenerationFinished(boolean generationFinished) {
-        isGenerationFinished = generationFinished;
-    }
-
-    public synchronized void put(List<Integer> values) {
-        for (int value : values) {
-            if (data.size() >= size) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    @Override
+    public synchronized void put(Object value) {
+        if (data.size() >= size) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            data.add(value);
         }
+        data.add((Integer) value);
         notify();
-  }
+    }
 
-
+    @Override
     public synchronized void clear() {
         data.clear();
         notify();
     }
 
+    @Override
     public synchronized boolean isEmpty() {
         return data.isEmpty();
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+
+    public boolean isGenerationFinished() {
+        return isGenerationFinished;
+    }
+
+    public synchronized void setGenerationFinished(boolean generationFinished) {
+        isGenerationFinished = generationFinished;
+        notify();
+    }
+
+    public synchronized void addValues(List<Integer> values) {
+        for (int value : values) {
+            put(value);
+        }
     }
 
     public synchronized void showBufferConsole() {
@@ -56,10 +68,10 @@ public class MyBuffer {
         }
     }
 
-    public List<Integer> getAllNumbersOne() {
+    public synchronized List<Integer> getAllNumbersOne() {
         List<Integer> numbersOne = new ArrayList<>();
         List<Integer> toRemove = new ArrayList<>();
-        synchronized (this) {
+
             for (int number : data) {
                 if (number == 1) {
                     numbersOne.add(number);
@@ -70,13 +82,8 @@ public class MyBuffer {
             if (data.isEmpty()) {
                 notify();
             }
-        }
+
         return numbersOne;
     }
-
-    public int getSize() {
-        return size;
-    }
-
 }
 
